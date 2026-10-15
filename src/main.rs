@@ -111,6 +111,7 @@ fn generate(pass_lenght: usize) -> String {
 }
 
 fn main() {
+    println!("hello world");
     let theme = ColorfulTheme::default();
     let mut clipboard = Clipboard::new().ok();
 
