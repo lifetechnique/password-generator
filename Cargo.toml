@@ -3,6 +3,13 @@ name = "passgen"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+opt-level = 3
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+
 [dependencies]
 dialoguer = { version = "0.11", features = ["password"] }
 rand = "0.9"
