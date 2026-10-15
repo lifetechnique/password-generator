@@ -1,7 +1,0 @@
-[target.x86_64-unknown-linux-musl]
-# На Windows-хосте нет линковщика cc для Linux; rustc подставляет
-# собственный встроенный rust-lld, а rust-std musl содержит libc и crt-объекты.
-linker = "rust-lld"
-
-[build]
-target = "x86_64-unknown-linux-musl"
