@@ -112,8 +112,13 @@ fn generate(pass_lenght: usize) -> String {
         if upper_or_lower {
             character = character.to_ascii_uppercase();
         }
-
+        
         pass.push(character);
+        
+        let vosclicatelniy_znak = rng.random_bool(1.0 / 5.0);
+        if vosclicatelniy_znak {
+            pass.push('!');
+        }
     }
     pass.into_iter().collect()
 }
@@ -159,7 +164,7 @@ fn main() {
                     .interact_text()
                     .unwrap();
 
-                if pass_lenght <= 8 || pass_lenght > 999 {
+                if pass_lenght < 8 || pass_lenght > 999 {
                     println!("🤨🤨🤨");
                     continue 'main;
                 }
