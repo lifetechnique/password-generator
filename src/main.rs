@@ -1,12 +1,11 @@
 use arboard::Clipboard;
 use chacha20poly1305::{
-    ChaCha20Poly1305, Key, Nonce,
-    aead::{Aead, KeyInit},
+    ChaCha20Poly1305, Key, Nonce, aead::{Aead, Buffer, KeyInit},
 };
 use dialoguer::{Input, Password, Select, theme::ColorfulTheme};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
-use std::fmt;
+use std::{fmt, time::Duration};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
@@ -36,6 +35,15 @@ fn derive_key(master_password: &str) -> Key {
     let len = pwd_bytes.len().min(32);
     key_bytes[..len].copy_from_slice(&pwd_bytes[..len]);
     *Key::from_slice(&key_bytes)
+}
+
+fn clipboard_clear() {
+    std::thread::spawn(|| {
+        std::thread::sleep(Duration::from_secs(30));
+        if let Ok(mut cb) = Clipboard::new() {
+            let _ = cb.set_text("");
+        }
+    });
 }
 
 fn save_vault(
@@ -151,7 +159,7 @@ fn main() {
                     .interact_text()
                     .unwrap();
 
-                if pass_lenght == 0 || pass_lenght > 999 {
+                if pass_lenght <= 8 || pass_lenght > 999 {
                     println!("🤨🤨🤨");
                     continue 'main;
                 }
@@ -177,6 +185,7 @@ fn main() {
                     if cb.set_text(new_item.password.clone()).is_ok() {
                         println!(" password automatically copied");
                         println!("------------------------------");
+                        clipboard_clear();
                     }
                 }
 
@@ -210,6 +219,7 @@ fn main() {
                     if let Some(ref mut cb) = clipboard {
                         if cb.set_text(vault[copy_selection].password.clone()).is_ok() {
                             println!("\n password for '{}' copied", vault[copy_selection].service);
+                            clipboard_clear();
                         } else {
                             println!("\n cant copy (´ ∀ ` *) ");
                         }
